@@ -73,7 +73,7 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto text-center relative">
           <div className="inline-flex items-center gap-2 border border-[#2A2A2A] rounded-full px-4 py-1.5 text-xs text-[#6B6560] mb-8">
             <span className="w-1.5 h-1.5 bg-[#E8A020] rounded-full animate-pulse" />
-            Powered by Claude AI
+            Powered by Gemini AI
           </div>
 
           <h1 style={{fontFamily: 'Playfair Display, serif'}} className="text-5xl md:text-7xl font-bold leading-[1.05] mb-6">

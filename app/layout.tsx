@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'Generate stunning UI components, design systems, and production-ready code with AI. From concept to code in seconds.',
   keywords: 'UI design, UX design, AI design tool, component generator, design system',
   openGraph: {
-    title: 'DesignJacks — AI-Powered UI/UX Design Tool',
+    title: 'DesignJacks — AI-Powered UI Component Design Tool',
     description: 'Generate stunning UI components, design systems, and production-ready code with AI.',
     type: 'website',
   },

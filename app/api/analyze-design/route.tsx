@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { genAI, MODEL } from '@/lib/gemini'
+import { geminiGenerate } from '@/lib/gemini'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -8,9 +8,7 @@ export async function POST(req: NextRequest) {
   try {
     const { description, context } = await req.json()
 
-    const model = genAI.getGenerativeModel({ model: MODEL })
-
-    const result = await model.generateContent(`Analyze this UI/UX design and provide detailed feedback:
+    const prompt = `Analyze this UI/UX design and provide detailed feedback:
 
 Design Description: ${description}
 Context/Purpose: ${context || 'Not specified'}
@@ -38,9 +36,9 @@ Return ONLY valid JSON (no markdown) with this structure:
   "recommendations": ["recommendation 1", "recommendation 2", "recommendation 3"],
   "accessibilityNotes": "WCAG compliance notes",
   "improvementPrompt": "A ready-to-use prompt to regenerate this component with improvements applied"
-}`)
+}`
 
-    const raw = result.response.text()
+    const raw = await geminiGenerate(prompt)
     const clean = raw.replace(/```json|```/g, '').trim()
     const analysis = JSON.parse(clean)
 

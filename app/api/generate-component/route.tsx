@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { genAI, MODEL } from '@/lib/gemini'
+import { geminiGenerate } from '@/lib/gemini'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -27,30 +27,11 @@ Guidelines:
 - For React: use inline styles or a <style> tag, no external dependencies
 - Add a brief comment at the top describing the component`
 
-    const model = genAI.getGenerativeModel({
-      model: MODEL,
-      systemInstruction: systemPrompt,
-    })
+    const userPrompt = `Generate a UI component: ${prompt}\n\nFramework: ${framework}\nStyle: ${style}\n\nReturn only the code, no explanations.`
 
-    const result = await model.generateContent(
-      `Generate a UI component: ${prompt}\n\nFramework: ${framework}\nStyle: ${style}\n\nReturn only the code, no explanations.`
-    )
+    const code = await geminiGenerate(userPrompt, systemPrompt)
 
-    const code = result.response.text()
-    const usageMetadata = result.response.usageMetadata
-
-    return NextResponse.json({
-      code,
-      framework,
-      style,
-      prompt,
-      tokens: usageMetadata
-        ? {
-            input_tokens: usageMetadata.promptTokenCount ?? 0,
-            output_tokens: usageMetadata.candidatesTokenCount ?? 0,
-          }
-        : null,
-    })
+    return NextResponse.json({ code, framework, style, prompt })
   } catch (error: unknown) {
     console.error('Generate error:', error)
     const message = error instanceof Error ? error.message : 'Generation failed'

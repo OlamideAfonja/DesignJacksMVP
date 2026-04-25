@@ -10,7 +10,7 @@ export async function geminiGenerate(prompt: string, systemPrompt?: string): Pro
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
-        generationConfig: { maxOutputTokens: 4000, temperature: 0.7 },
+        generationConfig: { maxOutputTokens: 12000, temperature: 0.7 },
       }),
     }
   )

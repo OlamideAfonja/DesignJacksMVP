@@ -1,34 +1,26 @@
-export async function callGemini(prompt: string, systemPrompt?: string) {
+export async function geminiGenerate(prompt: string, systemPrompt?: string): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) throw new Error('GEMINI_API_KEY not set')
+  if (!apiKey) throw new Error('GEMINI_API_KEY is not set')
 
-  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-nano:generateContent?key=${apiKey}`
+  const fullPrompt = systemPrompt ? `${systemPrompt}\n\n${prompt}` : prompt
 
-  const body = {
-    contents: [
-      {
-        parts: [
-          { text: prompt }
-        ]
-      }
-    ]
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
+        generationConfig: { maxOutputTokens: 4000, temperature: 0.7 },
+      }),
+    }
+  )
+
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`Gemini API error: ${err}`)
   }
 
-  if (systemPrompt) {
-    body.systemInstruction = { parts: [{ text: systemPrompt }] }
-  }
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  })
-
-  if (!response.ok) {
-    const error = await response.json()
-    throw new Error(JSON.stringify(error))
-  }
-
-  const data = await response.json()
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || ''
+  const data = await res.json()
+  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
 }

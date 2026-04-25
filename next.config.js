@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    serverComponentsExternalPackages: ['@anthropic-ai/sdk']
+    serverComponentsExternalPackages: ['@google/generative-ai']
   }
 }
 

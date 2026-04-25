@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { anthropic, MODEL } from '@/lib/anthropic'
+import { genAI, MODEL } from '@/lib/gemini'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -8,13 +8,9 @@ export async function POST(req: NextRequest) {
   try {
     const { brand, industry, mood } = await req.json()
 
-    const message = await anthropic.messages.create({
-      model: MODEL,
-      max_tokens: 2000,
-      messages: [
-        {
-          role: 'user',
-          content: `Generate a complete design system for:
+    const model = genAI.getGenerativeModel({ model: MODEL })
+
+    const result = await model.generateContent(`Generate a complete design system for:
 Brand: ${brand || 'a modern tech startup'}
 Industry: ${industry || 'SaaS'}
 Mood: ${mood || 'professional, trustworthy, innovative'}
@@ -65,12 +61,9 @@ Return ONLY valid JSON (no markdown) with this structure:
     "lg": "box-shadow value"
   },
   "rationale": "Brief explanation of the design choices"
-}`
-        }
-      ],
-    })
+}`)
 
-    const raw = message.content[0].type === 'text' ? message.content[0].text : '{}'
+    const raw = result.response.text()
     const clean = raw.replace(/```json|```/g, '').trim()
     const assets = JSON.parse(clean)
 

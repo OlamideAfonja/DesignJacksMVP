@@ -100,7 +100,7 @@ export default function LandingPage() {
             {examples.map((ex, i) => (
               <Link key={i} href={`/generate?prompt=${encodeURIComponent(ex)}`}
                 className="text-xs text-[#6B6560] border border-[#1E1E1E] rounded-full px-3 py-1.5 hover:border-[#E8A020] hover:text-[#E8A020] transition-all">
-                "{ex}"
+                &quot;{ex}&quot;
               </Link>
             ))}
           </div>
@@ -180,7 +180,7 @@ export default function LandingPage() {
             </div>
             <span className="text-sm text-[#6B6560]">DesignJacks MVP</span>
           </div>
-          <p className="text-xs text-[#6B6560]">Built with Next.js + Claude AI · Deploy to Vercel</p>
+          <p className="text-xs text-[#6B6560]">Built with Next.js + Gemini AI · Deploy to Vercel</p>
         </div>
       </footer>
     </div>

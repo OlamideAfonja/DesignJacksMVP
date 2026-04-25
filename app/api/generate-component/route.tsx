@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { anthropic, MODEL } from '@/lib/anthropic'
+import { genAI, MODEL } from '@/lib/gemini'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -27,26 +27,29 @@ Guidelines:
 - For React: use inline styles or a <style> tag, no external dependencies
 - Add a brief comment at the top describing the component`
 
-    const message = await anthropic.messages.create({
+    const model = genAI.getGenerativeModel({
       model: MODEL,
-      max_tokens: 4000,
-      messages: [
-        {
-          role: 'user',
-          content: `Generate a UI component: ${prompt}\n\nFramework: ${framework}\nStyle: ${style}\n\nReturn only the code, no explanations.`
-        }
-      ],
-      system: systemPrompt,
+      systemInstruction: systemPrompt,
     })
 
-    const code = message.content[0].type === 'text' ? message.content[0].text : ''
+    const result = await model.generateContent(
+      `Generate a UI component: ${prompt}\n\nFramework: ${framework}\nStyle: ${style}\n\nReturn only the code, no explanations.`
+    )
+
+    const code = result.response.text()
+    const usageMetadata = result.response.usageMetadata
 
     return NextResponse.json({
       code,
       framework,
       style,
       prompt,
-      tokens: message.usage,
+      tokens: usageMetadata
+        ? {
+            input_tokens: usageMetadata.promptTokenCount ?? 0,
+            output_tokens: usageMetadata.candidatesTokenCount ?? 0,
+          }
+        : null,
     })
   } catch (error: unknown) {
     console.error('Generate error:', error)

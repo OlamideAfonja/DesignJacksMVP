@@ -178,7 +178,7 @@ export default function LandingPage() {
             <div className="w-6 h-6 bg-[#E8A020] rounded flex items-center justify-center">
               <span className="text-[#0D0D0D] font-bold text-xs font-mono">DJ</span>
             </div>
-            <span className="text-sm text-[#6B6560]">DesignJacks MVP</span>
+            <span className="text-sm text-[#6B6560]">DesignJacks</span>
           </div>
           <p className="text-xs text-[#6B6560]">Built with Next.js + Gemini AI · Deploy to Vercel</p>
         </div>
